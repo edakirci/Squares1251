@@ -9,7 +9,9 @@ namespace Squares
     internal class Program
     {
         static void Main(string[] args)
+
         {
+            //deneme
         }
     }
 }
