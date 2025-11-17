@@ -11,7 +11,7 @@ namespace Squares
         static void Main(string[] args)
 
         {
-            //deneme
+            //deneme 2
         }
     }
 }
