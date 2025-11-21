@@ -5,6 +5,28 @@ int INPUT = 0;
 bool acceptable =false;
 Random rnd = new();
 
+bool[,] pieces1  = new bool[5,5];
+bool[,] pieces2  = new bool[5,5];
+bool[,] pieces3  = new bool[5,5];
+bool[,] pieces4  = new bool[5,5];
+bool[,] pieces5  = new bool[5,5];
+bool[,] pieces6  = new bool[5,5];
+bool[,] pieces7  = new bool[5,5];
+bool[,] pieces8  = new bool[5,5];
+bool[,] pieces9  = new bool[5,5];
+bool[,] pieces10 = new bool[5,5];
+bool[,] pieces11 = new bool[5,5];
+bool[,] pieces12 = new bool[5,5];
+bool[,] pieces13 = new bool[5,5];
+bool[,] pieces14 = new bool[5,5];
+bool[,] pieces15 = new bool[5,5];
+bool[,] pieces16 = new bool[5,5];
+bool[,] pieces17 = new bool[5,5];
+bool[,] pieces18 = new bool[5,5];
+bool[,] pieces19 = new bool[5,5];
+bool[,] pieces20 = new bool[5,5];
+Array[] arrays = new Array[20] {pieces1,pieces2,pieces3,pieces4,pieces5,pieces6,pieces7,pieces8,pieces9,pieces10,pieces11,pieces12,pieces13,pieces14,pieces15,pieces16,pieces17,pieces18,pieces19,pieces20};
+
 while (INPUT == 0)
 {
     Console.Write("Pieces number:");
