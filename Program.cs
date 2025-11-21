@@ -20,7 +20,7 @@ while (INPUT == 0)
                     // fill grid randomly
                     for (int i = 0; i < 5; i++)
                         for (int k = 0; k < 5; k++)
-                            pieces[i, k] = rnd.Next(0, 2) == 0; // true = X, false = .
+                            {pieces[i, k] = rnd.Next(0, 2) == 0;} // true = X, false = .
                     
                     
                         
@@ -34,7 +34,11 @@ while (INPUT == 0)
                                 total++;
                                 if (srow == -1) { srow = i; scol = k; }
                             }
-
+                    if(total<2 | total>12)
+                    {
+                        acceptable= false;
+                     continue;
+                    }
                     if (total == 0)
                     {
                         acceptable = false;
@@ -71,7 +75,7 @@ while (INPUT == 0)
                     }
 
                     acceptable = !anyIsolated;
-                    if(total>=2 & total<=12) acceptable= false;
+                    
                 }
 
                 // print grid
