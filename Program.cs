@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 int total=0;
+
 int INPUT = 0;
 bool acceptable =false;
 Random rnd = new();
@@ -29,10 +30,15 @@ Array[] arrays = new Array[20] {pieces1,pieces2,pieces3,pieces4,pieces5,pieces6,
 
 while (INPUT == 0)
 {
+    bool[,] tempo= new bool[5,5];
     Console.Write("Pieces number:");
     int piecenum = Convert.ToInt16(Console.ReadLine());
     for(int a1=1;a1<=piecenum;a1++)
     {
+        int bosparcax=0;
+int bosparcay=0;
+int bossutun=0;
+int bossatir=0;
                  acceptable = false;
                 bool[,] pieces = new bool[5, 5];
 
@@ -100,19 +106,92 @@ while (INPUT == 0)
                     
                 }
 
-                // print grid
-                for (int i = 0; i < 5; i++)
+
+for(int i=0;i<5;i++)
+        {
+            for(int k=0;k<5;k++)
+            {
+                if (pieces[i,k]== false)
                 {
-                    for (int k = 0; k < 5; k++)
-                        Console.Write(pieces[i, k] ? 'X' : '.');
-                    Console.WriteLine();
+                   bosparcax++;
+                   if (bosparcax==5) 
+                        bossatir++;                
+                } 
+                
+                else 
+                bosparcax=0;
+                if (pieces[k,i] == false)
+                {
+                    bosparcay++;
+                    if(bosparcay==5) bossutun++;
+                } else bosparcay=0;
+            }
+        }
+while(bossatir>0)
+        {
+            for(int i = 1; i < 5; i++)
+            {
+                for(int k = 0; k < 5; k++)
+                {
+                    pieces[i-1,k] = pieces[i,k];
                 }
-                Console.WriteLine();
+            }
+                for(int k = 0; k < 5; k++)
+                {
+                    pieces[4,k]= false;
+                }
+                bossatir--;
+        }
+while(bossutun>0)
+        {
+            for(int i = 0; i < 5; i++)
+            {
+                for(int k = 1; k < 5; k++)
+                {
+                    pieces[i,k-1] = pieces[i,k];
+                }
+            }
+                for(int k = 0; k < 5; k++)
+                {
+                    pieces[k,4]= false;
+                }
+                bossutun--;
+        }
+
+
+
+            arrays[a1]=pieces;
+            print(pieces);
+         
+
+
     }
+
+
                 Console.WriteLine();
+                if(acceptable) Console.WriteLine("0=restart, 1=call back");
                 if (acceptable) INPUT = Convert.ToInt16(Console.ReadLine());
+                if (INPUT==1)
+                {
+                    Console.Write("which one: ");
+                    int a2=Convert.ToInt16(Console.ReadLine());
+                    tempo= (bool[,])arrays[a2];
+                    print(tempo);
+                    INPUT=0;
+
+                }       
+
     
 }
+
+
+
+
+
+
+
+
+
             //Asagisi AI help. :/                 <----
 
 
@@ -154,4 +233,14 @@ while (INPUT == 0)
 
                 return count;
     
+}
+void print(bool[,] parray)
+{
+     for (int i = 0; i < 5; i++)
+                {
+                    for (int k = 0; k < 5; k++)
+                        Console.Write(parray[i, k] ? 'X' : '.');
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
 }
