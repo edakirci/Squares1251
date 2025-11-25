@@ -1,246 +1,289 @@
 ﻿using System;
 using System.Collections.Generic;
-int total=0;
 
-int INPUT = 0;
-bool acceptable =false;
-Random rnd = new();
-
-bool[,] pieces1  = new bool[5,5];
-bool[,] pieces2  = new bool[5,5];
-bool[,] pieces3  = new bool[5,5];
-bool[,] pieces4  = new bool[5,5];
-bool[,] pieces5  = new bool[5,5];
-bool[,] pieces6  = new bool[5,5];
-bool[,] pieces7  = new bool[5,5];
-bool[,] pieces8  = new bool[5,5];
-bool[,] pieces9  = new bool[5,5];
-bool[,] pieces10 = new bool[5,5];
-bool[,] pieces11 = new bool[5,5];
-bool[,] pieces12 = new bool[5,5];
-bool[,] pieces13 = new bool[5,5];
-bool[,] pieces14 = new bool[5,5];
-bool[,] pieces15 = new bool[5,5];
-bool[,] pieces16 = new bool[5,5];
-bool[,] pieces17 = new bool[5,5];
-bool[,] pieces18 = new bool[5,5];
-bool[,] pieces19 = new bool[5,5];
-bool[,] pieces20 = new bool[5,5];
-Array[] arrays = new Array[20] {pieces1,pieces2,pieces3,pieces4,pieces5,pieces6,pieces7,pieces8,pieces9,pieces10,pieces11,pieces12,pieces13,pieces14,pieces15,pieces16,pieces17,pieces18,pieces19,pieces20};
-
-while (INPUT == 0)
+namespace PblSquares
 {
-    bool[,] tempo= new bool[5,5];
-    Console.Write("Pieces number:");
-    int piecenum = Convert.ToInt16(Console.ReadLine());
-    for(int a1=1;a1<=piecenum;a1++)
+    internal class Program
     {
-        int bosparcax=0;
-int bosparcay=0;
-int bossutun=0;
-int bossatir=0;
-                 acceptable = false;
-                bool[,] pieces = new bool[5, 5];
+        static void Main(string[] args)
+        {
+            int userChoice = 0;
+            bool isAcceptable = false;
+            Random random = new Random();
 
-                while (!acceptable)
+            bool[,] piece1 = new bool[5, 5];
+            bool[,] piece2 = new bool[5, 5];
+            bool[,] piece3 = new bool[5, 5];
+            bool[,] piece4 = new bool[5, 5];
+            bool[,] piece5 = new bool[5, 5];
+            bool[,] piece6 = new bool[5, 5];
+            bool[,] piece7 = new bool[5, 5];
+            bool[,] piece8 = new bool[5, 5];
+            bool[,] piece9 = new bool[5, 5];
+            bool[,] piece10 = new bool[5, 5];
+            bool[,] piece11 = new bool[5, 5];
+            bool[,] piece12 = new bool[5, 5];
+            bool[,] piece13 = new bool[5, 5];
+            bool[,] piece14 = new bool[5, 5];
+            bool[,] piece15 = new bool[5, 5];
+            bool[,] piece16 = new bool[5, 5];
+            bool[,] piece17 = new bool[5, 5];
+            bool[,] piece18 = new bool[5, 5];
+            bool[,] piece19 = new bool[5, 5];
+            bool[,] piece20 = new bool[5, 5];
+
+            Array[] pieceStorage = new Array[20]
+            {
+                piece1,piece2,piece3,piece4,piece5,piece6,piece7,piece8,piece9,piece10,
+                piece11,piece12,piece13,piece14,piece15,piece16,piece17,piece18,piece19,piece20
+            };
+
+            while (userChoice == 0)
+            {
+                bool[,] tempPiece = new bool[5, 5];
+                Console.Write("Pieces number:");
+                int pieceCount = Convert.ToInt16(Console.ReadLine());
+
+                for (int pieceIndex = 1; pieceIndex <= pieceCount; pieceIndex++)
                 {
-                    
-                    // fill grid randomly
-                    for (int i = 0; i < 5; i++)
-                        for (int k = 0; k < 5; k++)
-                            {pieces[i, k] = rnd.Next(0, 2) == 0;} // true = X, false = .
-                    
-                    
-                        
-                    // find a start X and total X count
-                     total = 0;
-                    int srow = -1, scol = -1;
-                    for (int i = 0; i < 5; i++)
-                        for (int k = 0; k < 5; k++)
-                            if (pieces[i, k])
+                    isAcceptable = false;
+                    bool[,] currentPiece = new bool[5, 5];
+
+                    while (!isAcceptable)
+                    {
+                        // fill grid randomly
+                        for (int i = 0; i < 5; i++)
+                            for (int k = 0; k < 5; k++)
                             {
-                                total++;
-                                if (srow == -1) { srow = i; scol = k; }
+                                currentPiece[i, k] = random.Next(0, 2) == 0; // true = X, false = .
                             }
-                    if(total<2 | total>12)
-                    {
-                        acceptable= false;
-                     continue;
-                    }
-                    if (total == 0)
-                    {
-                        acceptable = false;
-                        continue;
-                    }
 
-                    // BFS ile bağlılık kontrolü: start'tan erişilen X sayısı total'a eşit olmalı 
-                    // BFS =Bir graf veya ızgara üzerinde, bir başlangıç düğümünden başlayarak önce aynı uzaklıktaki tüm düğümleri (aynı seviye) gezip sonra bir sonraki seviyeye geçer.
-                    
-                    int reached = BFSCount(pieces, srow, scol);  //AI
-                    if (reached != total)                        //AI
-                    {                                            //AI
-                        acceptable = false;                  
-                        continue;                                //AI
-                    }                                            //AI
+                        // find a start X and total X count
+                        int totalCellCount = 0;
+                        int startRow = -1, startCol = -1;
+                        for (int i = 0; i < 5; i++)
+                            for (int k = 0; k < 5; k++)
+                                if (currentPiece[i, k])
+                                {
+                                    totalCellCount++;
+                                    if (startRow == -1) { startRow = i; startCol = k; }
+                                }
 
-                    // check for isolated trues (gerekirse; BFS zaten bağlı bileşen kontrolünü yaptı,
-                    // ama istenirse her X'in en az bir komşusu olduğunu ayrıca kontrol ederiz)
-                    bool anyIsolated = false;
-                    for (int i = 0; i < 5 && !anyIsolated; i++)
-                    {
-                        for (int k = 0; k < 5 && !anyIsolated; k++)
+                        if (totalCellCount < 2 | totalCellCount > 12)
                         {
-                            if (!pieces[i, k]) continue;
-
-                            bool hasNeighbor =
-                                (i > 0 && pieces[i - 1, k]) ||
-                                (i < 4 && pieces[i + 1, k]) ||
-                                (k > 0 && pieces[i, k - 1]) ||
-                                (k < 4 && pieces[i, k + 1]);
-
-                            if (!hasNeighbor) anyIsolated = true;
+                            isAcceptable = false;
+                            continue;
                         }
+                        if (totalCellCount == 0)
+                        {
+                            isAcceptable = false;
+                            continue;
+                        }
+
+                        // BFS ile bağlılık kontrolü: start'tan erişilen X sayısı total'a eşit olmalı 
+                        // BFS =Bir graf veya ızgara üzerinde, bir başlangıç düğümünden başlayarak önce aynı uzaklıktaki tüm düğümleri (aynı seviye) gezip sonra bir sonraki seviyeye geçer.
+                        int reachableCells = BFSCount(currentPiece, startRow, startCol);
+                        if (reachableCells != totalCellCount)
+                        {
+                            isAcceptable = false;
+                            continue;
+                        }
+
+                        // check for isolated trues (gerekirse; BFS zaten bağlı bileşen kontrolünü yaptı,
+                        // ama istenirse her X'in en az bir komşusu olduğunu ayrıca kontrol ederiz)
+                        bool hasIsolatedCell = false;
+                        for (int i = 0; i < 5 && !hasIsolatedCell; i++)
+                        {
+                            for (int k = 0; k < 5 && !hasIsolatedCell; k++)
+                            {
+                                if (!currentPiece[i, k]) continue;
+
+                                bool hasNeighbor =
+                                    (i > 0 && currentPiece[i - 1, k]) ||
+                                    (i < 4 && currentPiece[i + 1, k]) ||
+                                    (k > 0 && currentPiece[i, k - 1]) ||
+                                    (k < 4 && currentPiece[i, k + 1]);
+
+                                if (!hasNeighbor) hasIsolatedCell = true;
+                            }
+                        }
+
+                        isAcceptable = !hasIsolatedCell;
                     }
 
-                    acceptable = !anyIsolated;
-                    
+                    // normalize / shift to top-left (senin eski shift mantığını fonksiyonlaştırdık)
+                    currentPiece = NormalizeShift(currentPiece);
+
+                    pieceStorage[pieceIndex] = currentPiece;
+                    PrintPiece(currentPiece);
                 }
-
-
-for(int i=0;i<5;i++)
-        {
-            for(int k=0;k<5;k++)
-            {
-                if (pieces[i,k]== false)
-                {
-                   bosparcax++;
-                   if (bosparcax==5) 
-                        bossatir++;                
-                } 
-                
-                else 
-                bosparcax=0;
-                if (pieces[k,i] == false)
-                {
-                    bosparcay++;
-                    if(bosparcay==5) bossutun++;
-                } else bosparcay=0;
-            }
-        }
-while(bossatir>0)
-        {
-            for(int i = 1; i < 5; i++)
-            {
-                for(int k = 0; k < 5; k++)
-                {
-                    pieces[i-1,k] = pieces[i,k];
-                }
-            }
-                for(int k = 0; k < 5; k++)
-                {
-                    pieces[4,k]= false;
-                }
-                bossatir--;
-        }
-while(bossutun>0)
-        {
-            for(int i = 0; i < 5; i++)
-            {
-                for(int k = 1; k < 5; k++)
-                {
-                    pieces[i,k-1] = pieces[i,k];
-                }
-            }
-                for(int k = 0; k < 5; k++)
-                {
-                    pieces[k,4]= false;
-                }
-                bossutun--;
-        }
-
-
-
-            arrays[a1]=pieces;
-            print(pieces);
-         
-
-
-    }
-
 
                 Console.WriteLine();
-                if(acceptable) Console.WriteLine("0=restart, 1=call back");
-                if (acceptable) INPUT = Convert.ToInt16(Console.ReadLine());
-                if (INPUT==1)
+                if (isAcceptable) Console.WriteLine("0=restart, 1=call back");
+                if (isAcceptable) userChoice = Convert.ToInt16(Console.ReadLine());
+                if (userChoice == 1)
                 {
                     Console.Write("which one: ");
-                    int a2=Convert.ToInt16(Console.ReadLine());
-                    tempo= (bool[,])arrays[a2];
-                    print(tempo);
-                    INPUT=0;
+                    int selectedPieceIndex = Convert.ToInt16(Console.ReadLine());
+                    tempPiece = (bool[,])pieceStorage[selectedPieceIndex];
+                    PrintPiece(tempPiece);
+                    userChoice = 0;
+                }
+            }
+        }
 
-                }       
-
-    
-}
-
-
+        //Asagisi AI help. :/                 <----
 
 
+        // Yerel fonksiyon: start'tan erişilebilen true hücre sayısını döner (ortogonal bağlantı)
+        static int BFSCount(bool[,] grid, int sr, int sc)
+        {
+            int n = grid.GetLength(0);
+            int m = grid.GetLength(1);
 
+            if (sr < 0 || sc < 0 || sr >= n || sc >= m) return 0;
+            if (!grid[sr, sc]) return 0;
 
+            bool[,] seen = new bool[n, m];
+            Queue<(int r, int c)> q = new Queue<(int r, int c)>();
+            q.Enqueue((sr, sc));
+            seen[sr, sc] = true;
+            int count = 0;
 
+            int[] dr = new int[] { -1, 1, 0, 0 };
+            int[] dc = new int[] { 0, 0, -1, 1 };
 
-
-            //Asagisi AI help. :/                 <----
-
-
-            // Yerel fonksiyon: start'tan erişilebilen true hücre sayısını döner (ortogonal bağlantı)
-            int BFSCount(bool[,] grid, int sr, int sc)
+            while (q.Count > 0)
             {
-                int n = grid.GetLength(0);
-                int m = grid.GetLength(1);
+                var (r, c) = q.Dequeue();
+                if (!grid[r, c]) continue;
+                count++;
 
-                if (sr < 0 || sc < 0 || sr >= n || sc >= m) return 0;
-                if (!grid[sr, sc]) return 0;
-
-                bool[,] seen = new bool[n, m];
-                Queue<(int r, int c)> q = new();
-                q.Enqueue((sr, sc));
-                seen[sr, sc] = true;
-                int count = 0;
-
-                int[] dr = new int[] { -1, 1, 0, 0 };
-                int[] dc = new int[] { 0, 0, -1, 1 };
-
-                while (q.Count > 0)
+                for (int d = 0; d < 4; d++)
                 {
-                    var (r, c) = q.Dequeue();
-                    if (!grid[r, c]) continue;
-                    count++;
-
-                    for (int d = 0; d < 4; d++)
+                    int nr = r + dr[d];
+                    int nc = c + dc[d];
+                    if (nr >= 0 && nr < n && nc >= 0 && nc < m && !seen[nr, nc] && grid[nr, nc])
                     {
-                        int nr = r + dr[d];
-                        int nc = c + dc[d];
-                        if (nr >= 0 && nr < n && nc >= 0 && nc < m && !seen[nr, nc] && grid[nr, nc])
-                        {
-                            seen[nr, nc] = true;
-                            q.Enqueue((nr, nc));
-                        }
+                        seen[nr, nc] = true;
+                        q.Enqueue((nr, nc));
                     }
                 }
+            }
 
-                return count;
-    
-}
-void print(bool[,] parray)
-{
-     for (int i = 0; i < 5; i++)
+            return count;
+        }
+
+        static bool[,] NormalizeShift(bool[,] grid)
+        {
+            int emptyRowCount = 0;
+            int emptyColumnCount = 0;
+            int consecutiveEmptyRow = 0;
+            int consecutiveEmptyColumn = 0;
+
+            // boş satır ve sütun sayısını bul
+            for (int i = 0; i < 5; i++)
+            {
+                for (int k = 0; k < 5; k++)
+                {
+                    if (grid[i, k] == false)
+                    {
+                        consecutiveEmptyRow++;
+                        if (consecutiveEmptyRow == 5)
+                            emptyRowCount++;
+                    }
+                    else
+                        consecutiveEmptyRow = 0;
+
+                    if (grid[k, i] == false)
+                    {
+                        consecutiveEmptyColumn++;
+                        if (consecutiveEmptyColumn == 5)
+                            emptyColumnCount++;
+                    }
+                    else
+                        consecutiveEmptyColumn = 0;
+                }
+            }
+
+            // satırları yukarı kaydır
+            while (emptyRowCount > 0)
+            {
+                for (int i = 1; i < 5; i++)
                 {
                     for (int k = 0; k < 5; k++)
-                        Console.Write(parray[i, k] ? 'X' : '.');
-                    Console.WriteLine();
+                    {
+                        grid[i - 1, k] = grid[i, k];
+                    }
                 }
+                for (int k = 0; k < 5; k++)
+                {
+                    grid[4, k] = false;
+                }
+                emptyRowCount--;
+            }
+
+            // sütunları sola kaydır
+            while (emptyColumnCount > 0)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    for (int k = 1; k < 5; k++)
+                    {
+                        grid[i, k - 1] = grid[i, k];
+                    }
+                }
+                for (int k = 0; k < 5; k++)
+                {
+                    grid[k, 4] = false;
+                }
+                emptyColumnCount--;
+            }
+
+            return grid;
+        }
+
+        static bool[,] RotatePiece(bool[,] grid)
+        {
+            bool[,] rotated = new bool[5, 5];
+
+            // 90 derece saat yönünde döndürme
+            for (int r = 0; r < 5; r++)
+            {
+                for (int c = 0; c < 5; c++)
+                {
+                    rotated[c, 4 - r] = grid[r, c];
+                }
+            }
+
+            return NormalizeShift(rotated);
+        }
+
+        static bool[,] ReversePiece(bool[,] grid)
+        {
+            bool[,] reversed = new bool[5, 5];
+
+            // yatay ayna (soldan sağa ters çevirme)
+            for (int r = 0; r < 5; r++)
+            {
+                for (int c = 0; c < 5; c++)
+                {
+                    reversed[r, 4 - c] = grid[r, c];
+                }
+            }
+
+            return NormalizeShift(reversed);
+        }
+
+        static void PrintPiece(bool[,] pieceGrid)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                for (int k = 0; k < 5; k++)
+                    Console.Write(pieceGrid[i, k] ? 'X' : '.');
                 Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+    }
 }
