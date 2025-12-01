@@ -1,389 +1,425 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-bool flag = true;
-int Xcount = 0;
-int userChoice = 0;
-bool Valid = true;
-bool isAcceptable = false;
-int emptyRowCount = 0;
-int emptyColumnCount = 0;
-Random random = new Random();
-int[] Direction = { -2, -1, 1, 2 };
-int Rowloc = 0;
-int Colloc = 0;
-int col;
-int row;
 
-// -2 = left, -1 = down, 1 = up, 2 = right
-
-
-bool[,] piece1 = new bool[5, 5];
-bool[,] piece2 = new bool[5, 5];
-bool[,] piece3 = new bool[5, 5];
-bool[,] piece4 = new bool[5, 5];
-bool[,] piece5 = new bool[5, 5];
-bool[,] piece6 = new bool[5, 5];
-bool[,] piece7 = new bool[5, 5];
-bool[,] piece8 = new bool[5, 5];
-bool[,] piece9 = new bool[5, 5];
-bool[,] piece10 = new bool[5, 5];
-bool[,] piece11 = new bool[5, 5];
-bool[,] piece12 = new bool[5, 5];
-bool[,] piece13 = new bool[5, 5];
-bool[,] piece14 = new bool[5, 5];
-bool[,] piece15 = new bool[5, 5];
-bool[,] piece16 = new bool[5, 5];
-bool[,] piece17 = new bool[5, 5];
-bool[,] piece18 = new bool[5, 5];
-bool[,] piece19 = new bool[5, 5];
-bool[,] piece20 = new bool[5, 5];
-
-Array[] pieceStorage = new Array[20]
+namespace Squares
 {
-                piece1,piece2,piece3,piece4,piece5,piece6,piece7,piece8,piece9,piece10,
-                piece11,piece12,piece13,piece14,piece15,piece16,piece17,piece18,piece19,piece20
-};
-
-Console.WriteLine("Chose X numbering 2-12");
-int userX = Convert.ToInt16(Console.ReadLine());
-while (userChoice == 0)
-{
-    Valid = true;
-    bool[,] tempPiece = new bool[5, 5];
-    Console.Write("Pieces number:");
-    int pieceCount = Convert.ToInt16(Console.ReadLine());
-
-
-    // Console.WriteLine("!isAcceptable"); // debug line-----------------------------------------------------------------
-    for (int pieceIndex = 1; pieceIndex <= pieceCount; pieceIndex++)
+    internal class Program
     {
-        // Console.WriteLine("Generating piece " + pieceIndex); // debug line-----------------------------------------------------------------
-
-        bool[,] currentPiece = new bool[5, 5];
-
-        flag = true;
-        Xcount = 0;
-
-
-        do
+        static void Main(string[] args)
         {
-            for (row = 0; row < 5; row++)
+            bool flag = true;
+            int Xcount = 0;
+            int userChoice = 0;
+            bool Valid = true;
+            Random random = new Random();
+            int Rowloc = 0;
+            int Colloc = 0;
+            int col;
+            int row;
+
+            // Parça dizilerini tanımla
+            bool[,] piece1 = new bool[5, 5];
+            bool[,] piece2 = new bool[5, 5];
+            bool[,] piece3 = new bool[5, 5];
+            bool[,] piece4 = new bool[5, 5];
+            bool[,] piece5 = new bool[5, 5];
+            bool[,] piece6 = new bool[5, 5];
+            bool[,] piece7 = new bool[5, 5];
+            bool[,] piece8 = new bool[5, 5];
+            bool[,] piece9 = new bool[5, 5];
+            bool[,] piece10 = new bool[5, 5];
+            bool[,] piece11 = new bool[5, 5];
+            bool[,] piece12 = new bool[5, 5];
+            bool[,] piece13 = new bool[5, 5];
+            bool[,] piece14 = new bool[5, 5];
+            bool[,] piece15 = new bool[5, 5];
+            bool[,] piece16 = new bool[5, 5];
+            bool[,] piece17 = new bool[5, 5];
+            bool[,] piece18 = new bool[5, 5];
+            bool[,] piece19 = new bool[5, 5];
+            bool[,] piece20 = new bool[5, 5];
+
+            // Depolama dizisi
+            Array[] pieceStorage = new Array[21]
             {
-                for (col = 0; col < 5; col++)
+                null,
+                piece1, piece2, piece3, piece4, piece5, piece6, piece7, piece8, piece9, piece10,
+                piece11, piece12, piece13, piece14, piece15, piece16, piece17, piece18, piece19, piece20
+            };
+
+            bool[,] tempPiece = new bool[5, 5];
+
+            Console.WriteLine("Chose X numbering 2-12");
+            int userX = Convert.ToInt32(Console.ReadLine());
+
+            while (userChoice == 0)
+            {
+                Valid = true;
+
+                Console.Write("Pieces number (1-20): ");
+                int pieceCount = Convert.ToInt32(Console.ReadLine());
+                if (pieceCount > 20) pieceCount = 20;
+
+                for (int pieceIndex = 1; pieceIndex <= pieceCount; pieceIndex++)
                 {
-                    random = new Random();
-                    if (flag)
-                        currentPiece[row, col] = random.Next(0, 24) == 0; // true = X, false = .
-                    else currentPiece[row, col] = false;
-                    if (currentPiece[row, col]) Xcount++;
-                    if (Xcount == 1 && flag)
+                    bool isUnique = false;
+                    bool[,] currentPiece = new bool[5, 5];
+                    int attemptCount = 0; // DENEME SAYACI (SONSUZ DÖNGÜYÜ ENGELLEMEK İÇİN)
+                    bool gaveUp = false;
+
+                    // --- UNIQUE PARÇA BULANA KADAR DÖNECEK DÖNGÜ ---
+                    do
                     {
-                        Rowloc = row;
-                        Colloc = col;
-                    }
-                    if (Xcount >= 1)
+                        attemptCount++;
+                        // Eğer 2000 denemede yeni parça bulamazsa pes etsin
+                        if (attemptCount > 2000)
+                        {
+                            Console.WriteLine("\n[UYARI] " + userX + " kare ile daha fazla EŞSİZ (Unique) parça bulunamadı.");
+                            Console.WriteLine("Matematiksel sınıra ulaşmış olabilirsiniz.");
+                            Console.WriteLine("Şu ana kadar bulunan parça sayısı: " + (pieceIndex - 1));
+                            gaveUp = true;
+                            break;
+                        }
+
+                        // 1. Matrisi Sıfırla
+                        currentPiece = new bool[5, 5];
+                        flag = true;
+                        Xcount = 0;
+
+                        // 2. İlk X'i yerleştir
+                        do
+                        {
+                            Xcount = 0;
+                            for (row = 0; row < 5; row++)
+                            {
+                                for (col = 0; col < 5; col++)
+                                {
+                                    if (flag) currentPiece[row, col] = random.Next(0, 24) == 0;
+                                    else currentPiece[row, col] = false;
+
+                                    if (currentPiece[row, col]) Xcount++;
+
+                                    if (Xcount == 1 && flag)
+                                    {
+                                        Rowloc = row;
+                                        Colloc = col;
+                                    }
+
+                                    if (Xcount >= 1) flag = false;
+                                }
+                            }
+                        }
+                        while (Xcount == 0);
+
+                        // 3. Random Walk (Büyütme)
+                        for (int i = 0, N = 0; i < (userX - 1 + N); i++)
+                        {
+                            int Step = random.Next(-2, 3);
+
+                            if (Step == -2 && Colloc > 0)
+                            {
+                                if (!currentPiece[Rowloc, Colloc - 1]) currentPiece[Rowloc, Colloc - 1] = true;
+                                else { N++; }
+                                Colloc = Colloc - 1;
+                            }
+                            else if (Step == -1 && Rowloc < 4)
+                            {
+                                if (!currentPiece[Rowloc + 1, Colloc]) currentPiece[Rowloc + 1, Colloc] = true;
+                                else { N++; }
+                                Rowloc = Rowloc + 1;
+                            }
+                            else if (Step == 1 && Rowloc > 0)
+                            {
+                                if (!currentPiece[Rowloc - 1, Colloc]) currentPiece[Rowloc - 1, Colloc] = true;
+                                else { N++; }
+                                Rowloc = Rowloc - 1;
+                            }
+                            else if (Step == 2 && Colloc < 4)
+                            {
+                                if (!currentPiece[Rowloc, Colloc + 1]) currentPiece[Rowloc, Colloc + 1] = true;
+                                else { N++; }
+                                Colloc = Colloc + 1;
+                            }
+                            else { N++; }
+                        }
+
+                        // 4. Normalize Et
+                        currentPiece = NormalizeShift(currentPiece);
+                        currentPiece = NormalizeShift(currentPiece); // Garanti olsun diye
+
+                        // 5. COMPARISON (KARŞILAŞTIRMA) KISMI
+                        if (CheckIfDuplicate(currentPiece, pieceStorage, pieceIndex))
+                        {
+                            isUnique = false;
+                        }
+                        else
+                        {
+                            isUnique = true;
+                        }
+
+                    } while (!isUnique);
+
+                    // Eğer pes ettiyse dıştaki döngüyü de kırıp bitir
+                    if (gaveUp)
                     {
-                        flag = false;
+                        break;
                     }
+
+                    // Eşsiz parça bulundu, kaydet
+                    pieceStorage[pieceIndex] = currentPiece;
+                    PrintPiece(currentPiece);
+                    Console.WriteLine("Piece " + pieceIndex + " accepted (Unique).");
                 }
-            }
-            //DebugPiece(currentPiece, Rowloc, Colloc);
-            //Console.Read();
-        }
-        while (Xcount == 0);
-        //PrintPiece(currentPiece);
-        //Console.ReadKey(); // pause to view initial piece
 
-        for (int i = 0, N = 0; i < (userX - 1 + N); i++)
-        {
-
-            int Step = random.Next(-2, 3);
-            if (Step == -2 && Colloc > 0)
-            {
-                if (!currentPiece[Rowloc, Colloc - 1])
-                    currentPiece[Rowloc, Colloc - 1] = true;
-                else { N++; }
-                Colloc = Colloc - 1;
-            }
-            else if (Step == -1 && Rowloc < 4)
-            {
-                if (!currentPiece[Rowloc + 1, Colloc])
-                    currentPiece[Rowloc + 1, Colloc] = true;
-                else { N++; }
-                Rowloc = Rowloc + 1;
-            }
-            else if (Step == 1 && Rowloc > 0)
-            {
-                if (!currentPiece[Rowloc - 1, Colloc])
-                    currentPiece[Rowloc - 1, Colloc] = true;
-                else { N++; }
-                Rowloc = Rowloc - 1;
-            }
-            else if (Step == 2 && Colloc < 4)
-            {
-                if (!currentPiece[Rowloc, Colloc + 1])
-                    currentPiece[Rowloc, Colloc + 1] = true;
-                else { N++; }
-                Colloc = Colloc + 1;
-            }
-            else if (Step == 0) { N++; }
-            else { N++; }
-            //DebugPiece(currentPiece, Rowloc, Colloc);
-            //Console.Read();
-        }
-
-        //Console.WriteLine("normalize baslar"); // debug line-----------------------------------------------------------------
-                                               // normalize / shift to top-left (senin eski shift mantığını fonksiyonlaştırdık)
-        currentPiece = NormalizeShift(currentPiece);
-        //PrintPiece(currentPiece); // debug line to see normalized piece -----------------------------------------------------------------
-        if (emptyRowCount > 0 || emptyColumnCount > 0)    
-        {
-            currentPiece = NormalizeShift(currentPiece);
-
-        }
-
-
-        pieceStorage[pieceIndex] = currentPiece;
-        PrintPiece(currentPiece);
-
-
-        Console.WriteLine("Piece " + pieceIndex + " accepted.");
-
-
-
-    }
-
-
-
-    Console.WriteLine("Be carefull");
-    Console.ReadLine();
-    Console.WriteLine();
-    Console.WriteLine("Be carefull");
-    Console.WriteLine("0=restart, 1=call back");
-    userChoice = Convert.ToInt16(Console.ReadLine());
-    if (userChoice == 1)
-    {
-        Console.Write("which one: ");
-        int selectedPieceIndex = Convert.ToInt16(Console.ReadLine());
-        tempPiece = (bool[,])pieceStorage[selectedPieceIndex];
-        PrintPiece(tempPiece);
-        do
-        {
-
-            Console.WriteLine("Do you want apply any function to this piece");
-            Console.WriteLine("Be carefull");
-            Console.WriteLine("Y/N");
-            char entryChoice = Console.ReadKey().KeyChar;
-
-            if (entryChoice == 'Y' || entryChoice == 'y')
-            {
+                Console.WriteLine("Be carefull");
                 Console.WriteLine();
-                Console.WriteLine("chose your function");
-                Console.WriteLine("1.Rotate");
-                Console.WriteLine("2.Reverse");
-                char entryChoice2 = Console.ReadKey().KeyChar;
-                Console.WriteLine();
-                if (entryChoice2 == '1')
-                {
-                    RotatePiece(tempPiece);
-                    PrintPiece(tempPiece);
-                }
-                else if (entryChoice2 == '2')
-                {
-                    ReversePiece(tempPiece);
-                    PrintPiece(tempPiece);
-                }
-                else Console.Write("Invalid input");
+                Console.WriteLine("0=restart, 1=call back");
 
+                try
+                {
+                    userChoice = Convert.ToInt32(Console.ReadLine());
+                }
+                catch
+                {
+                    userChoice = 0;
+                }
             }
-            Console.WriteLine();
-            Console.WriteLine("Again?");
-            Console.Write("Y/N");
-            entryChoice = Console.ReadKey().KeyChar;
-            if (entryChoice == 'Y' || entryChoice == 'y') Valid = true; else Valid = false;
-        }
-        while (Valid);
-        userChoice = 0;
-    }
-}
 
-
-
-
-
-
-static bool[,] NormalizeShift(bool[,] grid)
-{
-    bool StopX = false; //false = shift devam, true= shift dur
-    bool StopY = false; //false = shift devam, true= shift dur
-    int emptypieceCountX = 0;
-    int emptypieceCountY = 0;
-    int emptyRowCount = 0;
-    int emptyColumnCount = 0;
-
-    // Satırları kontrolu(sola kaydırmak için)
-    for (int i = 0; i < 5; i++)
-    {
-        for (int k = 0; k < 5; k++)
-        {
-            if (!StopX)
+            if (userChoice == 1)
             {
-                if (grid[i, k] == false)
+                Console.Write("which one: ");
+                int selectedPieceIndex = Convert.ToInt32(Console.ReadLine());
+
+                if (selectedPieceIndex >= 1 && selectedPieceIndex < pieceStorage.Length && pieceStorage[selectedPieceIndex] != null)
                 {
-                    emptypieceCountX++;
-                    if (emptypieceCountX == 5)
+                    tempPiece = (bool[,])pieceStorage[selectedPieceIndex];
+                    PrintPiece(tempPiece);
+
+                    do
                     {
-                        emptyRowCount++;
-                        emptypieceCountX = 0;
+                        Console.WriteLine("Do you want apply any function to this piece");
+                        Console.WriteLine("Be carefull");
+                        Console.WriteLine("Y/N");
+                        char entryChoice = Console.ReadKey().KeyChar;
+                        Console.WriteLine();
+
+                        if (entryChoice == 'Y' || entryChoice == 'y')
+                        {
+                            Console.WriteLine("chose your function");
+                            Console.WriteLine("1.Rotate");
+                            Console.WriteLine("2.Reverse");
+                            char entryChoice2 = Console.ReadKey().KeyChar;
+                            Console.WriteLine();
+
+                            if (entryChoice2 == '1')
+                            {
+                                RotatePiece(tempPiece);
+                                PrintPiece(tempPiece);
+                            }
+                            else if (entryChoice2 == '2')
+                            {
+                                ReversePiece(tempPiece);
+                                PrintPiece(tempPiece);
+                            }
+                            else Console.WriteLine("Invalid input");
+                        }
+
+                        Console.WriteLine();
+                        Console.WriteLine("Again?");
+                        Console.Write("Y/N: ");
+                        entryChoice = Console.ReadKey().KeyChar;
+                        Console.WriteLine();
+
+                        if (entryChoice == 'Y' || entryChoice == 'y') Valid = true; else Valid = false;
+                    }
+                    while (Valid);
+                }
+                else
+                {
+                    Console.WriteLine("Geçersiz parça numarası veya parça mevcut değil.");
+                }
+
+                userChoice = 0;
+            }
+
+            Console.WriteLine("Program finished. Press any key to exit.");
+            Console.ReadKey();
+        }
+
+        // --- COMPARISON VE YARDIMCI METOTLAR ---
+
+        // Yeni parça, eskilerden herhangi birinin döndürülmüş haliyle aynı mı?
+        static bool CheckIfDuplicate(bool[,] newPiece, Array[] storage, int currentIndex)
+        {
+            // Henüz hiç parça üretilmediyse (index 1 ise) kopya olamaz
+            if (currentIndex <= 1) return false;
+
+            // Mevcut parçanın kopyasını al ki döndürürken bozulmasın
+            bool[,] checkPiece = CloneGrid(newPiece);
+
+            // 4 Kere döndürerek kontrol et (0, 90, 180, 270 derece)
+            for (int rot = 0; rot < 4; rot++)
+            {
+                // checkPiece'i normalize et (çünkü rotate edince kayabilir)
+                checkPiece = NormalizeShift(checkPiece);
+
+                // Hafızadaki önceki tüm parçalarla karşılaştır
+                for (int i = 1; i < currentIndex; i++)
+                {
+                    if (storage[i] != null) // Null kontrolü ekledim
+                    {
+                        bool[,] existingPiece = (bool[,])storage[i];
+                        if (AreMatricesEqual(checkPiece, existingPiece))
+                        {
+                            return true; // Eşleşme bulundu, bu bir kopyadır!
+                        }
                     }
                 }
-                else if (grid[i, k] == true)
-                {
-                    emptypieceCountX = 0;
-                    StopX = true;
-                }
-                if (k == 4)
-                    emptypieceCountX = 0;
-            }
-        }
-    }
 
-    // sütun kontrolü(yukari kaydirma icin)
-    for (int i = 0; i < 5; i++)
-    {
-        for (int k = 0; k < 5; k++)
+                // Parçayı bir sonraki kontrol için 90 derece döndür
+                RotatePiece(checkPiece);
+            }
+
+            return false; // Hiçbir eşleşme yok, parça unique
+        }
+
+        // İki 5x5 matrisin birebir aynı olup olmadığını kontrol eder
+        static bool AreMatricesEqual(bool[,] p1, bool[,] p2)
         {
-            if (!StopY)
+            for (int r = 0; r < 5; r++)
             {
-                if (grid[k, i] == false)
+                for (int c = 0; c < 5; c++)
                 {
-                    emptypieceCountY++;
-                    if (emptypieceCountY == 5)
+                    if (p1[r, c] != p2[r, c]) return false;
+                }
+            }
+            return true;
+        }
+
+        // Matrisin derin kopyasını oluşturur (Referans hatası olmasın diye)
+        static bool[,] CloneGrid(bool[,] source)
+        {
+            bool[,] dest = new bool[5, 5];
+            for (int r = 0; r < 5; r++)
+            {
+                for (int c = 0; c < 5; c++)
+                {
+                    dest[r, c] = source[r, c];
+                }
+            }
+            return dest;
+        }
+
+        static bool[,] NormalizeShift(bool[,] grid)
+        {
+            bool StopX = false;
+            bool StopY = false;
+            int emptyRowCount = 0;
+            int emptyColumnCount = 0;
+
+            for (int i = 0; i < 5; i++)
+            {
+                bool rowIsEmpty = true;
+                for (int k = 0; k < 5; k++)
+                {
+                    if (grid[i, k] == true)
                     {
-                        emptyColumnCount++;
-                        emptypieceCountY = 0;
+                        rowIsEmpty = false;
+                        StopX = true;
+                        break;
                     }
                 }
-                else if (grid[k, i] == true)
-                {
-                    emptypieceCountY = 0;
-                    StopY = true;
-                }
 
-                if (i == 4)
-                    emptypieceCountY = 0;
+                if (!StopX && rowIsEmpty) emptyRowCount++;
+                else StopX = true;
             }
-        }
-    }
-    //PrintPiece(grid); // debug line to see pieces that will be normalized -----------------------------------------------------------------
-    //Console.WriteLine("emptyRowCount: " + emptyRowCount); // debug line-----------------------------------------------------------------
-    //Console.WriteLine("emptyColumnCount: " + emptyColumnCount); // debug line -----------------------------------------------------------------
-    //Console.Read();
-    // satırları yukarı kaydır
-    int R = emptyRowCount;
-    int C = emptyColumnCount;
-    while (emptyRowCount > 0)
-    {
-        for (int i = 1; i < 5; i++)
-        {
+
             for (int k = 0; k < 5; k++)
             {
-                grid[i - 1, k] = grid[i, k];
+                bool colIsEmpty = true;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (grid[i, k] == true)
+                    {
+                        colIsEmpty = false;
+                        StopY = true;
+                        break;
+                    }
+                }
+
+                if (!StopY && colIsEmpty) emptyColumnCount++;
+                else StopY = true;
             }
-        }
-        emptyRowCount--;
-    }
 
-    for (int WillerasedRows = R; WillerasedRows > 0; WillerasedRows--)
-        for (int k = 0; k < 5; k++)
-        {
-            grid[5 - WillerasedRows, k] = false;
-        }
-
-
-
-    // sütunları sola kaydır
-    while (emptyColumnCount > 0)
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            for (int k = 1; k < 5; k++)
+            int shiftUp = emptyRowCount;
+            if (shiftUp > 0)
             {
-                grid[i, k - 1] = grid[i, k];
+                for (int i = 0; i < 5; i++)
+                {
+                    for (int k = 0; k < 5; k++)
+                    {
+                        if (i + shiftUp < 5) grid[i, k] = grid[i + shiftUp, k];
+                        else grid[i, k] = false;
+                    }
+                }
             }
+
+            int shiftLeft = emptyColumnCount;
+            if (shiftLeft > 0)
+            {
+                for (int k = 0; k < 5; k++)
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (k + shiftLeft < 5) grid[i, k] = grid[i, k + shiftLeft];
+                        else grid[i, k] = false;
+                    }
+                }
+            }
+
+            return grid;
         }
-        emptyColumnCount--;
-    }
-    for (int WillerasedCols = C; WillerasedCols > 0; WillerasedCols--)
-        for (int k = 0; k < 5; k++)
+
+        static void RotatePiece(bool[,] grid)
         {
-            grid[k, 5 - WillerasedCols] = false;
+            bool[,] rotated = new bool[5, 5];
+            for (int r = 0; r < 5; r++)
+            {
+                for (int c = 0; c < 5; c++)
+                {
+                    rotated[c, 4 - r] = grid[r, c];
+                }
+            }
+            rotated = NormalizeShift(rotated);
+            for (int i = 0; i < 5; i++)
+                for (int k = 0; k < 5; k++)
+                    grid[i, k] = rotated[i, k];
         }
 
-
-
-    return grid;
-}
-
-static void RotatePiece(bool[,] grid)
-{
-    bool[,] rotated = new bool[5, 5];
-
-    // 90 derece saat yönünde döndürme
-    for (int r = 0; r < 5; r++)
-    {
-        for (int c = 0; c < 5; c++)
+        static void ReversePiece(bool[,] grid)
         {
-            rotated[c, 4 - r] = grid[r, c];
+            bool[,] reversed = new bool[5, 5];
+            for (int r = 0; r < 5; r++)
+            {
+                for (int c = 0; c < 5; c++)
+                {
+                    reversed[r, 4 - c] = grid[r, c];
+                }
+            }
+            reversed = NormalizeShift(reversed);
+            for (int i = 0; i < 5; i++)
+                for (int k = 0; k < 5; k++)
+                    grid[i, k] = reversed[i, k];
         }
-    }
 
-    rotated = NormalizeShift(rotated);
-    for (int i = 0; i < 5; i++)
-        for (int k = 0; k < 5; k++)
-            grid[i, k] = rotated[i, k];
-}
-
-static void ReversePiece(bool[,] grid)
-{
-    bool[,] reversed = new bool[5, 5];
-
-    // yatay ayna (soldan sağa ters çevirme)
-    for (int r = 0; r < 5; r++)
-    {
-        for (int c = 0; c < 5; c++)
+        static void PrintPiece(bool[,] pieceGrid)
         {
-            reversed[r, 4 - c] = grid[r, c];
+            for (int i = 0; i < 5; i++)
+            {
+                for (int k = 0; k < 5; k++)
+                    Console.Write(pieceGrid[i, k] ? 'X' : '.');
+                Console.WriteLine();
+            }
+            Console.WriteLine();
         }
     }
-
-    reversed = NormalizeShift(reversed);
-    for (int i = 0; i < 5; i++)
-        for (int k = 0; k < 5; k++)
-            grid[i, k] = reversed[i, k];
-}
-
-static void PrintPiece(bool[,] pieceGrid)
-{
-    for (int i = 0; i < 5; i++)
-    {
-        for (int k = 0; k < 5; k++)
-            Console.Write(pieceGrid[i, k] ? 'X' : '.');
-        Console.WriteLine();
-    }
-    Console.WriteLine();
-}
-static void DebugPieceCreation(bool[,] pieceGrid, int rowloc, int colloc)
-{
-    for (int i = 0; i < 5; i++)
-    {
-        for (int k = 0; k < 5; k++)
-            if (i == rowloc && k == colloc)
-                Console.Write(pieceGrid[i, k] ? 'O' : '.');
-            else
-                Console.Write(pieceGrid[i, k] ? 'X' : '.');
-        Console.WriteLine();
-    }
-    Console.WriteLine();
 }
