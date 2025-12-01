@@ -16,7 +16,7 @@ namespace Squares
             int col;
             int row;
 
-            // Parça dizilerini tanımla
+            //creating pieces
             bool[,] piece1 = new bool[5, 5];
             bool[,] piece2 = new bool[5, 5];
             bool[,] piece3 = new bool[5, 5];
@@ -38,7 +38,7 @@ namespace Squares
             bool[,] piece19 = new bool[5, 5];
             bool[,] piece20 = new bool[5, 5];
 
-            // Depolama dizisi
+            // storage array
             Array[] pieceStorage = new Array[21]
             {
                 null,
@@ -63,29 +63,29 @@ namespace Squares
                 {
                     bool isUnique = false;
                     bool[,] currentPiece = new bool[5, 5];
-                    int attemptCount = 0; // DENEME SAYACI (SONSUZ DÖNGÜYÜ ENGELLEMEK İÇİN)
+                    int attemptCount = 0; // adding count for preventing infinite loop
                     bool gaveUp = false;
 
-                    // --- UNIQUE PARÇA BULANA KADAR DÖNECEK DÖNGÜ ---
+                    // loop will work until it finds unique piece
                     do
                     {
                         attemptCount++;
-                        // Eğer 2000 denemede yeni parça bulamazsa pes etsin
+                        // it will quint if it couln't find in 2000 trial
                         if (attemptCount > 2000)
                         {
-                            Console.WriteLine("\n[UYARI] " + userX + " kare ile daha fazla EŞSİZ (Unique) parça bulunamadı.");
-                            Console.WriteLine("Matematiksel sınıra ulaşmış olabilirsiniz.");
-                            Console.WriteLine("Şu ana kadar bulunan parça sayısı: " + (pieceIndex - 1));
+                            Console.WriteLine("\n[WARNING] " + "Could not find any more unique pieces with " + userX + " amount of squares more than " + (pieceIndex - 1));
+                            Console.WriteLine("You may have reached the mathematical limit. ");
+                            Console.WriteLine("Pieces generated and found unique until now: " + (pieceIndex - 1));
                             gaveUp = true;
                             break;
                         }
 
-                        // 1. Matrisi Sıfırla
+                        // 1. reset the matrix
                         currentPiece = new bool[5, 5];
                         flag = true;
                         Xcount = 0;
 
-                        // 2. İlk X'i yerleştir
+                        // 2. place the X
                         do
                         {
                             Xcount = 0;
@@ -110,7 +110,7 @@ namespace Squares
                         }
                         while (Xcount == 0);
 
-                        // 3. Random Walk (Büyütme)
+                        // 3. Random Walk 
                         for (int i = 0, N = 0; i < (userX - 1 + N); i++)
                         {
                             int Step = random.Next(-2, 3);
@@ -142,11 +142,11 @@ namespace Squares
                             else { N++; }
                         }
 
-                        // 4. Normalize Et
+                        // 4. Normalize it
                         currentPiece = NormalizeShift(currentPiece);
                         currentPiece = NormalizeShift(currentPiece); // Garanti olsun diye
 
-                        // 5. COMPARISON (KARŞILAŞTIRMA) KISMI
+                        // 5. Comparison
                         if (CheckIfDuplicate(currentPiece, pieceStorage, pieceIndex))
                         {
                             isUnique = false;
@@ -158,13 +158,13 @@ namespace Squares
 
                     } while (!isUnique);
 
-                    // Eğer pes ettiyse dıştaki döngüyü de kırıp bitir
+                    // if it quit, brake the outer loop
                     if (gaveUp)
                     {
                         break;
                     }
 
-                    // Eşsiz parça bulundu, kaydet
+                    // unique piece found, save it
                     pieceStorage[pieceIndex] = currentPiece;
                     PrintPiece(currentPiece);
                     Console.WriteLine("Piece " + pieceIndex + " accepted (Unique).");
@@ -207,6 +207,7 @@ namespace Squares
                             Console.WriteLine("chose your function");
                             Console.WriteLine("1.Rotate");
                             Console.WriteLine("2.Reverse");
+                            Console.WriteLine("3.All orientations");
                             char entryChoice2 = Console.ReadKey().KeyChar;
                             Console.WriteLine();
 
@@ -219,6 +220,10 @@ namespace Squares
                             {
                                 ReversePiece(tempPiece);
                                 PrintPiece(tempPiece);
+                            }
+                            else if (entryChoice2 == '3')
+                            {
+                                PrintAllOrientations(tempPiece);
                             }
                             else Console.WriteLine("Invalid input");
                         }
@@ -245,44 +250,43 @@ namespace Squares
             Console.ReadKey();
         }
 
-        // --- COMPARISON VE YARDIMCI METOTLAR ---
+        //METHODS
 
-        // Yeni parça, eskilerden herhangi birinin döndürülmüş haliyle aynı mı?
+        // Is the new piece the same as any of the old ones rotated?
         static bool CheckIfDuplicate(bool[,] newPiece, Array[] storage, int currentIndex)
         {
-            // Henüz hiç parça üretilmediyse (index 1 ise) kopya olamaz
+            // If no part has been produced yet (index is 1), there can be no copy
             if (currentIndex <= 1) return false;
 
-            // Mevcut parçanın kopyasını al ki döndürürken bozulmasın
+            // Make a copy of the current part so that it doesn't get corrupted when rotating
             bool[,] checkPiece = CloneGrid(newPiece);
 
-            // 4 Kere döndürerek kontrol et (0, 90, 180, 270 derece)
+            // Check by rotating 4 times (0, 90, 180, 270 degrees)
             for (int rot = 0; rot < 4; rot++)
             {
-                // checkPiece'i normalize et (çünkü rotate edince kayabilir)
+                // normalize checkPiece (because it may shift when rotated)
                 checkPiece = NormalizeShift(checkPiece);
 
-                // Hafızadaki önceki tüm parçalarla karşılaştır
+                // Compare with all previous chunks in memory
                 for (int i = 1; i < currentIndex; i++)
                 {
-                    if (storage[i] != null) // Null kontrolü ekledim
+                    if (storage[i] != null) // null check
                     {
                         bool[,] existingPiece = (bool[,])storage[i];
                         if (AreMatricesEqual(checkPiece, existingPiece))
                         {
-                            return true; // Eşleşme bulundu, bu bir kopyadır!
+                            return true; // Match found, this is a duplicate!
                         }
                     }
                 }
-
-                // Parçayı bir sonraki kontrol için 90 derece döndür
+                // Rotate the part 90 degrees for the next check
                 RotatePiece(checkPiece);
             }
 
-            return false; // Hiçbir eşleşme yok, parça unique
+            return false; // No match, piece is unique
         }
 
-        // İki 5x5 matrisin birebir aynı olup olmadığını kontrol eder
+        // Checks if two 5x5 matrices are identical
         static bool AreMatricesEqual(bool[,] p1, bool[,] p2)
         {
             for (int r = 0; r < 5; r++)
@@ -295,7 +299,7 @@ namespace Squares
             return true;
         }
 
-        // Matrisin derin kopyasını oluşturur (Referans hatası olmasın diye)
+        // Creates a deep copy of the matrix (to avoid reference errors)
         static bool[,] CloneGrid(bool[,] source)
         {
             bool[,] dest = new bool[5, 5];
@@ -409,6 +413,39 @@ namespace Squares
             for (int i = 0; i < 5; i++)
                 for (int k = 0; k < 5; k++)
                     grid[i, k] = reversed[i, k];
+        }
+
+        static void PrintAllOrientations(bool[,] piece)
+        {
+            Console.WriteLine("All orientations of this piece:");
+            Console.WriteLine();
+
+            // 1) Original + 3 rotation
+            bool[,] current = CloneGrid(piece);
+
+            Console.WriteLine("Original:");
+            PrintPiece(current);
+
+            for (int i = 1; i < 4; i++)
+            {
+                RotatePiece(current);
+                Console.WriteLine($"Rotation {i * 90}°:");
+                PrintPiece(current);
+            }
+
+            // 2) Reverse + 3 rotation
+            current = CloneGrid(piece);
+            ReversePiece(current);
+
+            Console.WriteLine("Reversed:");
+            PrintPiece(current);
+
+            for (int i = 1; i < 4; i++)
+            {
+                RotatePiece(current);
+                Console.WriteLine($"Reversed rotation {i * 90}°:");
+                PrintPiece(current);
+            }
         }
 
         static void PrintPiece(bool[,] pieceGrid)
