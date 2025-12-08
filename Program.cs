@@ -471,18 +471,19 @@ namespace Squares
     
             Console.WriteLine();
 
-            // Round bilgileri (örnek)
+            // Round infos
+            // will be filled it later
             Console.WriteLine("Round: ");
             Console.WriteLine("Pieces: ");
             Console.WriteLine("Min. Regularity: ");
             Console.WriteLine("Max. Regularity: ");
             Console.WriteLine();
 
-            // ÜST SATIR: Sütun numaraları (2 4 6 8 0 2 4 6 8 0 ...)
-            Console.Write("  "); // solda row label için 2 karakter boşluk
+            // UPPER ROW: row nums (2 4 6 8 0 2 4 6 8 0 ...)
+            Console.Write("  "); // two character blank for left row label
             for (int c = 0; c < puzzleCols; c++)
             {
-                // her 2. sütunda sayı yaz (2,4,6,8,0,...)
+                // write row nums for every two row (2,4,6,8,0,...)
                 if (c % 2 == 1)
                     Console.Write((c + 1) % 10);
                 else
@@ -490,30 +491,30 @@ namespace Squares
             }
             Console.WriteLine();
 
-            // GRID SATIRLARI
+            // GRID ROWS
             for (int r = 0; r < puzzleRows; r++)
             {
-                // Satır label'ı her 2 satırda bir göster: 2,4,6,8,0,2,...
+                // show row label in every 2 row: 2,4,6,8,0,2,...
                 if (r % 2 == 1)
                 {
                     int index = r / 2;                  // 0,1,2,3,...
                     int rowLabel = ((index + 1) * 2) % 10; // 2,4,6,8,0,...
-                    Console.Write(rowLabel);            // sol tarafa sayı
+                    Console.Write(rowLabel);            
                 }
                 else
                 {
-                    Console.Write(' ');                 // boş satır
+                    Console.Write(' ');                 // empty row
                 }
 
-                Console.Write(' ');                     // label ile grid arası boşluk
+                Console.Write(' ');                     // blank between grid and label
 
-                // 30 sütunluk puzzle alanı (hepsi '.')
+                // 30 column puzzle grid (all '.')
                 for (int c = 0; c < puzzleCols; c++)
                 {
                     Console.Write('.');
                 }
 
-                // Sağ taraf tamamen boş
+               //right side (all blank now will be filled later)
                 Console.WriteLine();
             }
 
