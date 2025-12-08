@@ -248,6 +248,8 @@ namespace Squares
 
             Console.WriteLine("Program finished. Press any key to exit.");
             Console.ReadKey();
+
+            PrintGameScreen();
         }
 
         //METHODS
@@ -458,5 +460,69 @@ namespace Squares
             }
             Console.WriteLine();
         }
+
+        // --- STAGE 3: GAME SCREEN SKELETON ---
+        static void PrintGameScreen()
+        {
+            int puzzleRows = 20;
+            int puzzleCols = 30;
+
+            Console.WriteLine();
+    
+            Console.WriteLine();
+
+            // Round bilgileri (örnek)
+            Console.WriteLine("Round: ");
+            Console.WriteLine("Pieces: ");
+            Console.WriteLine("Min. Regularity: ");
+            Console.WriteLine("Max. Regularity: ");
+            Console.WriteLine();
+
+            // ÜST SATIR: Sütun numaraları (2 4 6 8 0 2 4 6 8 0 ...)
+            Console.Write("  "); // solda row label için 2 karakter boşluk
+            for (int c = 0; c < puzzleCols; c++)
+            {
+                // her 2. sütunda sayı yaz (2,4,6,8,0,...)
+                if (c % 2 == 1)
+                    Console.Write((c + 1) % 10);
+                else
+                    Console.Write(' ');
+            }
+            Console.WriteLine();
+
+            // GRID SATIRLARI
+            for (int r = 0; r < puzzleRows; r++)
+            {
+                // Satır label'ı her 2 satırda bir göster: 2,4,6,8,0,2,...
+                if (r % 2 == 1)
+                {
+                    int index = r / 2;                  // 0,1,2,3,...
+                    int rowLabel = ((index + 1) * 2) % 10; // 2,4,6,8,0,...
+                    Console.Write(rowLabel);            // sol tarafa sayı
+                }
+                else
+                {
+                    Console.Write(' ');                 // boş satır
+                }
+
+                Console.Write(' ');                     // label ile grid arası boşluk
+
+                // 30 sütunluk puzzle alanı (hepsi '.')
+                for (int c = 0; c < puzzleCols; c++)
+                {
+                    Console.Write('.');
+                }
+
+                // Sağ taraf tamamen boş
+                Console.WriteLine();
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Regularity = (not calculated yet)");
+            Console.WriteLine("==================================");
+        }
+
+
+
     }
 }
