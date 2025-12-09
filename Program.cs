@@ -246,10 +246,10 @@ namespace Squares
                 userChoice = 0;
             }
 
+            PrintGameScreen(pieceStorage);
+
             Console.WriteLine("Program finished. Press any key to exit.");
             Console.ReadKey();
-
-            PrintGameScreen();
         }
 
         //METHODS
@@ -460,30 +460,63 @@ namespace Squares
             }
             Console.WriteLine();
         }
+        static void PositionPrint(bool[,] grid, int pieceIndex, int startX, int startY)
+        {
+
+            int columnIndex = (pieceIndex - 1) % 5;
+            int rowIndex = (pieceIndex - 1) / 5;
+
+            int baseX = startX + columnIndex * 8;
+            int baseY = startY + rowIndex * 6;
+
+            // harfi A,B,C,... olarak belirle
+            char letter = (char)('A' + (pieceIndex - 1));
+
+            int maxX = Math.Max(0, Console.BufferWidth - 5);
+            int maxY = Math.Max(0, Console.BufferHeight - 5);
+            if (baseX > maxX) baseX = maxX;
+            if (baseY > maxY) baseY = maxY;
+
+            for (int i = 0; i < 5; i++)
+            {
+                try
+                {
+                    Console.SetCursorPosition(baseX, baseY + i);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                for (int k = 0; k < 5; k++)
+                {
+                    // true olan yerlere parça harfini, diğerlerine boşluk yaz
+                    Console.Write(grid[i, k] ? letter : '.');
+                }
+            }
+        }
 
         // --- STAGE 3: GAME SCREEN SKELETON ---
-        static void PrintGameScreen()
+        // --- STAGE 3: GAME SCREEN (PUZZLE + ALL PIECES ON THE RIGHT) ---
+        static void PrintGameScreen(Array[] pieceStorage)
         {
             int puzzleRows = 20;
             int puzzleCols = 30;
 
             Console.WriteLine();
-    
             Console.WriteLine();
 
-            // Round infos
-            // will be filled it later
-            Console.WriteLine("Round: ");
+            // Round infos (şimdilik örnek)
+            Console.WriteLine("Round: 1");
             Console.WriteLine("Pieces: ");
             Console.WriteLine("Min. Regularity: ");
             Console.WriteLine("Max. Regularity: ");
             Console.WriteLine();
 
-            // UPPER ROW: row nums (2 4 6 8 0 2 4 6 8 0 ...)
-            Console.Write("  "); // two character blank for left row label
+            // ÜST SATIR: sütun numaraları (2 4 6 8 0 2 4 6 8 0 ...)
+            Console.Write("  "); // solda row label için 2 karakter boşluk
             for (int c = 0; c < puzzleCols; c++)
             {
-                // write row nums for every two row (2,4,6,8,0,...)
                 if (c % 2 == 1)
                     Console.Write((c + 1) % 10);
                 else
@@ -491,37 +524,60 @@ namespace Squares
             }
             Console.WriteLine();
 
-            // GRID ROWS
+            // grid’in ilk satırının Y pozisyonunu al
+            int gridTopY = Console.CursorTop;
+
+            // GRID SATIRLARI
             for (int r = 0; r < puzzleRows; r++)
             {
-                // show row label in every 2 row: 2,4,6,8,0,2,...
+                // satır label’ı: her 2 satırda bir 2,4,6,8,0,2,...
                 if (r % 2 == 1)
                 {
-                    int index = r / 2;                  // 0,1,2,3,...
-                    int rowLabel = ((index + 1) * 2) % 10; // 2,4,6,8,0,...
-                    Console.Write(rowLabel);            
+                    int index = r / 2;
+                    int rowLabel = ((index + 1) * 2) % 10;
+                    Console.Write(rowLabel);
                 }
                 else
                 {
-                    Console.Write(' ');                 // empty row
+                    Console.Write(' ');
                 }
 
-                Console.Write(' ');                     // blank between grid and label
+                Console.Write(' '); // label ile grid arası boşluk
 
-                // 30 column puzzle grid (all '.')
+                // 30 sütunluk puzzle alanı (şimdilik hepsi '.')
                 for (int c = 0; c < puzzleCols; c++)
                 {
                     Console.Write('.');
                 }
 
-               //right side (all blank now will be filled later)
                 Console.WriteLine();
             }
 
+            // grid’in bittiği satırı al
+            int afterGridY = Console.CursorTop;
+
+            // Sağ tarafın başlangıç X konumu:
+            // 1 label + 1 boşluk + 30 nokta + 3 padding ≈ 35
+            int rightStartX = 1 + 1 + puzzleCols + 3;
+            int rightStartY = gridTopY;
+
+            // TÜM PARÇALARI yazdır (1..20 arası dolu olanların hepsi)
+            for (int i = 1; i < pieceStorage.Length; i++)
+            {
+                if (pieceStorage[i] is bool[,] pieceGrid)
+                {
+                    PositionPrint(pieceGrid, i, rightStartX, rightStartY);
+                }
+            }
+
+            // Regularity satırını alta yaz
+            Console.SetCursorPosition(0, afterGridY);
             Console.WriteLine();
             Console.WriteLine("Regularity = (not calculated yet)");
             Console.WriteLine("==================================");
         }
+
+
 
 
 
