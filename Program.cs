@@ -248,6 +248,8 @@ namespace Squares
 
             PrintGameScreen(pieceStorage);
 
+            Console.WriteLine();
+
             Console.WriteLine("Program finished. Press any key to exit.");
             Console.ReadKey();
         }
@@ -509,8 +511,11 @@ namespace Squares
             // Round infos (şimdilik örnek)
             Console.WriteLine("Round: 1");
             Console.WriteLine("Pieces: ");
-            Console.WriteLine("Min. Regularity: ");
-            Console.WriteLine("Max. Regularity: ");
+
+            CalculateMinMaxRegularity(pieceStorage, out double minR, out double maxR);
+
+            Console.WriteLine($"Min. Regularity: {minR:F2}");
+            Console.WriteLine($"Max. Regularity: {maxR:F2}");
             Console.WriteLine();
 
             // ÜST SATIR: sütun numaraları (2 4 6 8 0 2 4 6 8 0 ...)
@@ -576,6 +581,90 @@ namespace Squares
             Console.WriteLine("Regularity = (not calculated yet)");
             Console.WriteLine("==================================");
         }
+
+        static double CalculateRegularity(bool[,] grid)
+        {
+            int rows = grid.GetLength(0);
+            int cols = grid.GetLength(1);
+
+            int totalSquares = 0;
+            int perimeter = 0;
+
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < cols; c++)
+                {
+                    if (!grid[r, c]) continue;
+
+                    totalSquares++;
+
+                    // up
+                    if (r == 0 || !grid[r - 1, c])
+                        perimeter++;
+
+                    // down
+                    if (r == rows - 1 || !grid[r + 1, c])
+                        perimeter++;
+
+                    // left
+                    if (c == 0 || !grid[r, c - 1])
+                        perimeter++;
+
+                    // right
+                    if (c == cols - 1 || !grid[r, c + 1])
+                        perimeter++;
+                }
+            }
+
+            if (perimeter == 0) return 0.0; // boş şekil durumu
+
+            double side = perimeter / 4.0;
+            double regularity = totalSquares / (side * side);
+
+            return regularity;
+        }
+
+        static void CalculateMinMaxRegularity(
+    Array[] pieceStorage,
+    out double minReg,
+    out double maxReg)
+        {
+
+            minReg = 1000.0; // min için büyük sayı veriyoruz ki ilk gelen parça bunu düşürsün
+            maxReg = -1.0;   // max için küçük sayı
+
+            bool foundValidPiece = false; // hiç parça bulduk mu
+
+            for (int i = 1; i < pieceStorage.Length; i++)
+            {
+                // parça var mı yok mu
+                if (pieceStorage[i] != null)
+                {
+                    bool[,] currentPiece = (bool[,])pieceStorage[i];
+
+                    double reg = CalculateRegularity(currentPiece);
+
+                    if (reg > 0.001)
+                    {
+                        foundValidPiece = true;
+
+                        if (reg < minReg)
+                            minReg = reg;
+
+                        if (reg > maxReg)
+                            maxReg = reg;
+                    }
+                }
+            }
+
+            // geçerli parça yoksa 0 yap
+            if (foundValidPiece == false)
+            {
+                minReg = 0.0;
+                maxReg = 0.0;
+            }
+        }
+
 
 
 
