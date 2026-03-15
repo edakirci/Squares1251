@@ -133,7 +133,9 @@ Build → Build Solution
 
 5. Run the project
 
-Debug → Start Without Debugging
+Build → Build Solution
+
+
 ---
 
 # Course Information
