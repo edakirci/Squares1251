@@ -1,8 +1,8 @@
 ![C#](https://img.shields.io/badge/Language-C%23-purple)
 ![.NET](https://img.shields.io/badge/Framework-.NET-blue)
+![IDE](https://img.shields.io/badge/IDE-VisualStudio-purple)
 ![Game](https://img.shields.io/badge/Type-PuzzleGame-green)
 ![Algorithm](https://img.shields.io/badge/Concept-ShapeGeneration-orange)
-![IDE](https://img.shields.io/badge/IDE-VisualStudio-purple)
 
 # Squares Puzzle Game
 
@@ -130,6 +130,7 @@ git clone https://github.com/edakirci/SquaresGame.git
 4. Build the project
 
 Build → Build Solution
+
 5. Run the project
 
 Debug → Start Without Debugging
